@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Quote from "./Quote";
 import Search from "./Search";
+import AddQuote from "./AddQuote";
+import uuid from "uuid";
 
 export default class QuoteSearcher extends Component {
   state = {
@@ -8,7 +10,20 @@ export default class QuoteSearcher extends Component {
     fetching: false,
     likeCount: 0,
     dislikeCount: 0,
-    currentUrl: "https://quote-garden.herokuapp.com/quotes/search/tree"
+    currentUrl: "https://quote-garden.herokuapp.com/quotes/search/tree",
+    numOfAuthors: 0
+  };
+
+  addQuote = (quote, author) => {
+    console.log(this.state.quotes);
+    const newQuoteObj = {
+      id: uuid.v4(),
+      quoteText: quote,
+      quoteAuthor: author,
+      liked: false,
+      disliked: false
+    };
+    this.setState({ quotes: [...this.state.quotes, newQuoteObj] });
   };
 
   fetchFunction = url => {
@@ -23,8 +38,13 @@ export default class QuoteSearcher extends Component {
           liked: false,
           disliked: false
         }));
-        this.setState({ quotes: parsedQuotes, fetching: false });
+
+        const uniqueQuotes = parsedQuotes.filter(
+          (set => f => !set.has(f.quoteText) && set.add(f.quoteText))(new Set())
+        );
+        this.setState({ quotes: uniqueQuotes, fetching: false });
       })
+
       .catch(err => {
         this.setState({ error: true, fetching: false });
         console.error("error!", err);
@@ -66,6 +86,13 @@ export default class QuoteSearcher extends Component {
     this.fetchFunction(url);
   };
 
+  uniqueAuthors = () => {
+    const uniqueAuthors = this.state.quotes.filter(
+      (set => f => !set.has(f.quoteAuthor) && set.add(f.quoteAuthor))(new Set())
+    );
+    return uniqueAuthors.length;
+  };
+
   render() {
     const likesCount = this.state.quotes.reduce((total, current) => {
       if (current.liked === true) {
@@ -92,6 +119,10 @@ export default class QuoteSearcher extends Component {
         <h2>
           Liked: {likesCount} / Disliked: {dislikesCount}
         </h2>
+        <h2>
+          Number of Quotes: {this.state.quotes.length} / Number of Authors:{" "}
+          {this.uniqueAuthors()}
+        </h2>
         <h3>
           {this.state.fetching
             ? "Loading..."
@@ -102,6 +133,8 @@ export default class QuoteSearcher extends Component {
         {this.state.quotes.map(quote => (
           <Quote data={quote} like={this.like} dislike={this.dislike} />
         ))}
+        <h2>Add Your Quote Here</h2>
+        <AddQuote addQuote={this.addQuote} />
       </div>
     );
   }
