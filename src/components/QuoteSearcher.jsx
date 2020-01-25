@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Quote from "./Quote";
 import Search from "./Search";
+import AddQuote from "./AddQuote";
+import uuid from "uuid";
 
 export default class QuoteSearcher extends Component {
   state = {
@@ -10,6 +12,18 @@ export default class QuoteSearcher extends Component {
     dislikeCount: 0,
     currentUrl: "https://quote-garden.herokuapp.com/quotes/search/tree",
     numOfAuthors: 0
+  };
+
+  addQuote = (quote, author) => {
+    console.log(this.state.quotes);
+    const newQuoteObj = {
+      id: uuid.v4(),
+      quoteText: quote,
+      quoteAuthor: author,
+      liked: false,
+      disliked: false
+    };
+    this.state.quotes.push(newQuoteObj);
   };
 
   fetchFunction = url => {
@@ -118,6 +132,8 @@ export default class QuoteSearcher extends Component {
         {this.state.quotes.map(quote => (
           <Quote data={quote} like={this.like} dislike={this.dislike} />
         ))}
+        <h2>Add Your Quote Here</h2>
+        <AddQuote addQuote={this.addQuote} />
       </div>
     );
   }
