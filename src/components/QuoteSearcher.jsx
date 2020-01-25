@@ -23,7 +23,11 @@ export default class QuoteSearcher extends Component {
           liked: false,
           disliked: false
         }));
-        this.setState({ quotes: parsedQuotes, fetching: false });
+
+        const uniqueQuotes = parsedQuotes.filter(
+          (set => f => !set.has(f.quoteText) && set.add(f.quoteText))(new Set())
+        );
+        this.setState({ quotes: uniqueQuotes, fetching: false });
       })
       .catch(err => {
         this.setState({ error: true, fetching: false });
