@@ -1,17 +1,19 @@
 import React, { Component } from "react";
 import Quote from "./Quote";
+import Search from "./Search";
 
 export default class QuoteSearcher extends Component {
   state = {
     quotes: [],
     fetching: false,
     likeCount: 0,
-    dislikeCount: 0
+    dislikeCount: 0,
+    currentUrl: "https://quote-garden.herokuapp.com/quotes/search/tree"
   };
 
-  componentDidMount = () => {
+  fetchFunction = url => {
     this.setState({ fetching: true });
-    return fetch("https://quote-garden.herokuapp.com/quotes/search/tree")
+    return fetch(url)
       .then(res => res.json())
       .then(quotes => {
         const parsedQuotes = quotes.results.map(quote => ({
@@ -27,6 +29,10 @@ export default class QuoteSearcher extends Component {
         this.setState({ error: true, fetching: false });
         console.error("error!", err);
       });
+  };
+
+  componentDidMount = () => {
+    this.fetchFunction(this.state.currentUrl);
   };
 
   like = id => {
@@ -51,6 +57,15 @@ export default class QuoteSearcher extends Component {
     this.setState({ quotes: quotesDisliked });
   };
 
+  searchByFetch = async searchQuery => {
+    const desc = searchQuery.toLowerCase().replace(/ /g, "+");
+    const url = `https://quote-garden.herokuapp.com/quotes/search/${desc}`;
+    this.setState({
+      currentUrl: url
+    });
+    this.fetchFunction(url);
+  };
+
   render() {
     const likesCount = this.state.quotes.reduce((total, current) => {
       if (current.liked === true) {
@@ -73,10 +88,17 @@ export default class QuoteSearcher extends Component {
     return (
       <div>
         <h1>Quotes</h1>
-        <p>
-          Likes: {likesCount} / Dislikes: {dislikesCount}
-        </p>
-        {this.state.fetching ? "Loading..." : null}
+        <Search searchByFetch={this.searchByFetch} />
+        <h2>
+          Liked: {likesCount} / Disliked: {dislikesCount}
+        </h2>
+        <h3>
+          {this.state.fetching
+            ? "Loading..."
+            : this.state.quotes.length === 0
+            ? "No quotes found! Please enter a new keyword."
+            : null}
+        </h3>
         {this.state.quotes.map(quote => (
           <Quote data={quote} like={this.like} dislike={this.dislike} />
         ))}
