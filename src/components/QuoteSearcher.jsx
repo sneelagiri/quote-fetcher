@@ -23,7 +23,7 @@ export default class QuoteSearcher extends Component {
       liked: false,
       disliked: false
     };
-    this.state.quotes.push(newQuoteObj);
+    this.setState({ quotes: [...this.state.quotes, newQuoteObj] });
   };
 
   fetchFunction = url => {
@@ -44,6 +44,7 @@ export default class QuoteSearcher extends Component {
         );
         this.setState({ quotes: uniqueQuotes, fetching: false });
       })
+
       .catch(err => {
         this.setState({ error: true, fetching: false });
         console.error("error!", err);
