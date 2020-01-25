@@ -8,7 +8,8 @@ export default class QuoteSearcher extends Component {
     fetching: false,
     likeCount: 0,
     dislikeCount: 0,
-    currentUrl: "https://quote-garden.herokuapp.com/quotes/search/tree"
+    currentUrl: "https://quote-garden.herokuapp.com/quotes/search/tree",
+    numOfAuthors: 0
   };
 
   fetchFunction = url => {
@@ -70,6 +71,13 @@ export default class QuoteSearcher extends Component {
     this.fetchFunction(url);
   };
 
+  uniqueAuthors = () => {
+    const uniqueAuthors = this.state.quotes.filter(
+      (set => f => !set.has(f.quoteAuthor) && set.add(f.quoteAuthor))(new Set())
+    );
+    return uniqueAuthors.length;
+  };
+
   render() {
     const likesCount = this.state.quotes.reduce((total, current) => {
       if (current.liked === true) {
@@ -95,6 +103,10 @@ export default class QuoteSearcher extends Component {
         <Search searchByFetch={this.searchByFetch} />
         <h2>
           Liked: {likesCount} / Disliked: {dislikesCount}
+        </h2>
+        <h2>
+          Number of Quotes: {this.state.quotes.length} / Number of Authors:{" "}
+          {this.uniqueAuthors()}
         </h2>
         <h3>
           {this.state.fetching
