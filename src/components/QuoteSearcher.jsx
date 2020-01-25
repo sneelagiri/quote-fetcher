@@ -15,7 +15,9 @@ export default class QuoteSearcher extends Component {
         const parsedQuotes = quotes.results.map(quote => ({
           id: quote._id,
           quoteText: quote.quoteText,
-          quoteAuthor: quote.quoteAuthor
+          quoteAuthor: quote.quoteAuthor,
+          liked: false,
+          disliked: false
         }));
         this.setState({ quotes: parsedQuotes, fetching: false });
       })
@@ -24,6 +26,10 @@ export default class QuoteSearcher extends Component {
         console.error("error!", err);
       });
   };
+
+  like = (like, dislike) => {};
+
+  dislike = boolean => {};
 
   render() {
     return (
@@ -35,6 +41,8 @@ export default class QuoteSearcher extends Component {
             data={quote}
             quoteText={this.quoteText}
             quoteAuthor={this.quoteAuthor}
+            like={this.like}
+            dislike={this.dislike}
           />
         ))}
       </div>

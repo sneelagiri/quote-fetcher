@@ -1,0 +1,9 @@
+.like {
+  font-weight: bold;
+  color: green;
+}
+
+.dislike {
+  text-decoration: line-through;
+  color: grey;
+}
