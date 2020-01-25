@@ -29,6 +29,7 @@ export default class QuoteSearcher extends Component {
     return (
       <div>
         <h1>Quotes</h1>
+        {this.state.fetching ? "Loading..." : null}
         {this.state.quotes.map(quote => (
           <Quote
             data={quote}
