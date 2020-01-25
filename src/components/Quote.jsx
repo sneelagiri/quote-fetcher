@@ -9,7 +9,13 @@ export default class Quote extends Component {
         {quoteText}
         <br></br>
         <br />
-        {`By: ${quoteAuthor}`}
+        {`By: ${quoteAuthor} `}
+        <br />
+        <br />
+        <div>
+          <button>Like</button>
+          <button>Dislike</button>
+        </div>
         <br />
         <br />
       </div>
