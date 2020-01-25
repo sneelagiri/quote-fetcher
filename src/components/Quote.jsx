@@ -2,27 +2,14 @@ import React, { Component } from "react";
 import "./css/Quote.css";
 
 export default class Quote extends Component {
-  state = {
-    liking: false,
-    disliking: false
-  };
-
-  like = () => {
-    this.setState({ liking: true, disliking: false });
-  };
-
-  dislike = () => {
-    this.setState({ liking: false, disliking: true });
-  };
-
   render() {
-    const { quoteText, quoteAuthor, liked, disliked } = this.props.data;
+    const { id, quoteText, quoteAuthor, liked, disliked } = this.props.data;
 
     return (
       <div>
-        {this.state.liking ? (
+        {liked ? (
           <p className="like">{quoteText}</p>
-        ) : this.state.disliking ? (
+        ) : disliked ? (
           <p className="dislike">{quoteText}</p>
         ) : (
           <p>{quoteText}</p>
@@ -32,8 +19,20 @@ export default class Quote extends Component {
         <br />
         <br />
         <div>
-          <button onClick={this.like}>Like</button>
-          <button onClick={this.dislike}>Dislike</button>
+          <button
+            onClick={() => {
+              this.props.like(id);
+            }}
+          >
+            Like
+          </button>
+          <button
+            onClick={() => {
+              this.props.dislike(id);
+            }}
+          >
+            Dislike
+          </button>
         </div>
       </div>
     );

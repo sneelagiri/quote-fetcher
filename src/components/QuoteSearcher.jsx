@@ -4,7 +4,9 @@ import Quote from "./Quote";
 export default class QuoteSearcher extends Component {
   state = {
     quotes: [],
-    fetching: false
+    fetching: false,
+    likeCount: 0,
+    dislikeCount: 0
   };
 
   componentDidMount = () => {
@@ -26,10 +28,27 @@ export default class QuoteSearcher extends Component {
         console.error("error!", err);
       });
   };
+  like = id => {
+    const quotesLiked = this.state.quotes.map(quote => {
+      if (id === quote.id) {
+        return { ...quote, liked: true, disliked: false };
+      } else {
+        return quote;
+      }
+    });
+    this.setState({ quotes: quotesLiked });
+  };
 
-  like = (like, dislike) => {};
-
-  dislike = boolean => {};
+  dislike = id => {
+    const quotesDisliked = this.state.quotes.map(quote => {
+      if (id === quote.id) {
+        return { ...quote, liked: false, disliked: true };
+      } else {
+        return quote;
+      }
+    });
+    this.setState({ quotes: quotesDisliked });
+  };
 
   render() {
     return (
@@ -37,13 +56,7 @@ export default class QuoteSearcher extends Component {
         <h1>Quotes</h1>
         {this.state.fetching ? "Loading..." : null}
         {this.state.quotes.map(quote => (
-          <Quote
-            data={quote}
-            quoteText={this.quoteText}
-            quoteAuthor={this.quoteAuthor}
-            like={this.like}
-            dislike={this.dislike}
-          />
+          <Quote data={quote} like={this.like} dislike={this.dislike} />
         ))}
       </div>
     );
